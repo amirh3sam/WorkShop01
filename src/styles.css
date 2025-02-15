@@ -59,7 +59,27 @@ body {
     background: linear-gradient(90deg, #D2691E, #8B4513);
     transform: scale(1.05);
 }
+.popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
 
+.popup {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    z-index: 1001;
+}
 .confirm-popup {
     position: fixed;
     top: 50%;
@@ -84,18 +104,18 @@ body {
     cursor: pointer;
     border-radius: 5px;
     font-weight: bold;
+    border: none;
 }
 
 .popup-yes {
-    background-color: green;
+    background-color: #f44336; /* Matching your delete button color */
     color: white;
 }
 
 .popup-no {
-    background-color: red;
+    background-color: #gray;
     color: white;
 }
-
 .checkBox {
     transform: scale(1.5); /* Increases the size of the checkbox */
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.2); /* Adds a shadow around the checkbox */

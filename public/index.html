@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Workshop Management</title>
+  <style>
+    /* All previous styles remain the same */
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f0f4f8;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+    }
+    .container {
+        width: 80%;
+        max-width: 800px;
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        text-align: center;
+    }
+    .tabs {
+        display: flex;
+        justify-content: space-between;
+        background: lightgray;
+        padding: 10px;
+        border-radius: 5px;
+    }
+    .tab {
+        flex: 1;
+        padding: 10px;
+        cursor: pointer;
+        font-weight: bold;
+    }
+    .active {
+        background: lightblue;
+        color: white;
+    }
+    .notification {
+        background: yellow;
+        padding: 5px;
+        border-radius: 50%;
+        font-size: 12px;
+        margin-left: 5px;
+        color: black;
+    }
+    .bell {
+        font-size: 16px;
+        margin-left: 5px;
+        display: inline-block;
+        visibility: hidden;
+    }
+    table {
+        width: 100%;
+        margin-top: 20px;
+        border-collapse: collapse;
+    }
+    th, td {
+        border: 1px solid gray;
+        padding: 10px;
+        text-align: center;
+    }
+    tr:nth-child(even) {
+        background: lightgray;
+    }
+    tr:nth-child(odd) {
+        background: darkgray;
+        color: white;
+    }
+    .delete-button {
+        padding: 8px 16px;
+        font-size: 14px;
+        background-color: lightblue;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-left: 10px;
+    }
+    .delete-button:hover {
+        background-color: #4fa3f7;
+    }
+    #submitSection button {
+        padding: 15px 30px;
+        font-size: 18px;
+        background-color: lightblue;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-top: 10px;
+    }
+    #submitSection button:hover {
+        background-color: #4fa3f7;
+    }
+    .number-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+        margin-top: 10px;
+    }
+    .number-box {
+        padding: 15px;
+        font-size: 20px;
+        background-color: #f7f7f7;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        cursor: pointer;
+        text-align: center;
+    }
+    .selected {
+        background-color: #4fa3f7;
+        color: white;
+    }
+    .department-button {
+        padding: 10px 20px;
+        margin: 5px;
+        background-color: #f7f7f7;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+    }
+    .department-button.selected {
+        background-color: #4fa3f7;
+        color: white;
+    }
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0,0,0,0.4);
+        padding-top: 60px;
+    }
+    .modal-content {
+        background-color: white;
+        margin: 5% auto;
+        padding: 20px;
+        border-radius: 10px;
+        width: 50%;
+        text-align: center;
+    }
+    .modal-content button {
+        padding: 10px 20px;
+        background-color: lightblue;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        margin: 0 10px;
+    }
+    .toast-notification {
+        position: fixed;
+        bottom: 20px;
+        right: -300px;
+        background-color: #4CAF50;
+        color: white;
+        padding: 16px 24px;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        font-size: 16px;
+        transition: right 0.5s ease-in-out;
+        z-index: 1000;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .toast-notification.show {
+        right: 20px;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="tabs">
+    <div class="tab active" id="salesTab">
+      Sales
+      <span class="notification" id="notifBadge">0</span>
+      <span class="bell" id="bellIcon" style="visibility: hidden;">🔔</span>
+    </div>
+    <div class="tab" id="submitTab">Submit Ready Cars</div>
+  </div>
+
+  <div id="salesSection">
+    <h2>Sales Notifications</h2>
+    <table>
+      <thead>
+      <tr>
+        <th>Department</th>
+        <th>Cars Ready</th>
+        <th>Time Submitted</th>
+        <th>Actions</th>
+      </tr>
+      </thead>
+      <tbody id="salesTable">
+      <tr id="noSubmissionsRow">
+        <td colspan="4">No submissions yet.</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div id="submitSection" style="display: none;">
+    <h2>Submit Ready Cars</h2>
+
+    <!-- Department Buttons -->
+    <button class="department-button" onclick="selectDepartment('Mechanic Shop')">Mechanic Shop</button>
+    <button class="department-button" onclick="selectDepartment('Car Detailing')">Car Detailing</button>
+    <button class="department-button" onclick="selectDepartment('Body Work')">Body Work</button>
+    <button class="department-button" onclick="selectDepartment('Body Cleaning')">Body Cleaning</button>
+
+    <div class="number-grid">
+      <div class="number-box" onclick="selectNumber(1)">1</div>
+      <div class="number-box" onclick="selectNumber(2)">2</div>
+      <div class="number-box" onclick="selectNumber(3)">3</div>
+      <div class="number-box" onclick="selectNumber(4)">4</div>
+      <div class="number-box" onclick="selectNumber(5)">5</div>
+      <div class="number-box" onclick="selectNumber(6)">6</div>
+      <div class="number-box" onclick="selectNumber(7)">7</div>
+      <div class="number-box" onclick="selectNumber(8)">8</div>
+      <div class="number-box" onclick="selectNumber(9)">9</div>
+    </div>
+
+    <button onclick="submitData()">Submit</button>
+  </div>
+</div>
+
+<div id="confirmationModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal()">&times;</span>
+    <h2>Confirm Submission</h2>
+    <p>Are you sure you want to submit this data?</p>
+    <button onclick="confirmSubmit()">Yes, Submit</button>
+    <button onclick="closeModal()">Cancel</button>
+  </div>
+</div>
+
+<div id="toastNotification" class="toast-notification">
+  <span class="checkmark">✓</span>
+  <span>Submission successful!</span>
+</div>
+
+<script>
+  let selectedNumber = null;
+  let uncheckedNotifications = 0;
+  let selectedDepartment = null;
+
+  document.getElementById("salesTab").addEventListener("click", function() {
+      document.getElementById("salesSection").style.display = "block";
+      document.getElementById("submitSection").style.display = "none";
+      document.getElementById("salesTab").classList.add("active");
+      document.getElementById("submitTab").classList.remove("active");
+      document.getElementById("bellIcon").style.visibility = "hidden";
+  });
+
+  document.getElementById("submitTab").addEventListener("click", function() {
+      document.getElementById("salesSection").style.display = "none";
+      document.getElementById("submitSection").style.display = "block";
+      document.getElementById("salesTab").classList.remove("active");
+      document.getElementById("submitTab").classList.add("active");
+  });
+
+  function selectNumber(number) {
+      selectedNumber = number;
+      let numberBoxes = document.querySelectorAll(".number-box");
+      numberBoxes.forEach(box => box.classList.remove("selected"));
+      let selectedBox = document.querySelector(`.number-box:nth-child(${number})`);
+      selectedBox.classList.add("selected");
+  }
+
+  function selectDepartment(department) {
+      selectedDepartment = department;
+      let departmentButtons = document.querySelectorAll(".department-button");
+      departmentButtons.forEach(button => {
+          if (button.textContent.trim() === department) {
+              button.classList.add("selected");
+          } else {
+              button.classList.remove("selected");
+          }
+      });
+  }
+
+  function submitData() {
+      if (!selectedDepartment) {
+          alert("Please select a department.");
+          return;
+      }
+      if (!selectedNumber) {
+          alert("Please select the number of cars.");
+          return;
+      }
+      document.getElementById("confirmationModal").style.display = "block";
+  }
+
+  function closeModal() {
+      document.getElementById("confirmationModal").style.display = "none";
+  }
+
+  function showToast() {
+      const toast = document.getElementById('toastNotification');
+      toast.classList.add('show');
+
+      setTimeout(() => {
+          toast.classList.remove('show');
+      }, 5000);
+  }
+
+  function confirmSubmit() {
+      let timestamp = new Date().toLocaleString();
+
+      let noSubmissionsRow = document.getElementById("noSubmissionsRow");
+      if (noSubmissionsRow) {
+          noSubmissionsRow.remove();
+      }
+
+      let newRow = document.createElement("tr");
+
+      let deptCell = document.createElement("td");
+      deptCell.textContent = selectedDepartment;
+      newRow.appendChild(deptCell);
+
+      let carsCell = document.createElement("td");
+      carsCell.textContent = selectedNumber;
+      newRow.appendChild(carsCell);
+
+      let timeCell = document.createElement("td");
+      timeCell.textContent = timestamp;
+      newRow.appendChild(timeCell);
+
+      let actionsCell = document.createElement("td");
+
+      // Create checkbox
+      let checkbox = document.createElement("input");
+      checkbox.type = "checkbox";
+      checkbox.className = "checkBox";
+      checkbox.onclick = updateNotification;
+
+      // Create delete button
+      let deleteButton = document.createElement("button");
+      deleteButton.textContent = "Delete";
+      deleteButton.className = "delete-button";
+      deleteButton.onclick = function() {
+          newRow.remove();
+          updateNotification();
+      };
+
+      actionsCell.appendChild(checkbox);
+      actionsCell.appendChild(deleteButton);
+      newRow.appendChild(actionsCell);
+
+      document.getElementById("salesTable").appendChild(newRow);
+
+      uncheckedNotifications++;
+
+      document.getElementById("notifBadge").innerText = uncheckedNotifications;
+      document.getElementById("notifBadge").style.display = "inline-block";
+
+      if (uncheckedNotifications > 0) {
+          document.getElementById("bellIcon").style.visibility = "visible";
+      }
+
+      showToast();
+
+      closeModal();
+      selectedDepartment = null;
+      selectedNumber = null;
+      let departmentButtons = document.querySelectorAll(".department-button");
+      departmentButtons.forEach(button => button.classList.remove("selected"));
+      let numberBoxes = document.querySelectorAll(".number-box");
+      numberBoxes.forEach(box => box.classList.remove("selected"));
+  }
+
+  function updateNotification() {
+      let checkboxes = document.querySelectorAll(".checkBox");
+      uncheckedNotifications = 0;
+
+      checkboxes.forEach(checkbox => {
+          if (!checkbox.checked) {
+              uncheckedNotifications++;
+          }
+      });
+
+      document.getElementById("notifBadge").innerText = uncheckedNotifications;
+
+      if (uncheckedNotifications === 0) {
+          document.getElementById("bellIcon").style.visibility = "hidden";
+      } else {
+          document.getElementById("bellIcon").style.visibility = "visible";
+      }
+  }
+</script>
+</body>
+</html>
