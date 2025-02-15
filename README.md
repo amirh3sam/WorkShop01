@@ -24,12 +24,16 @@ This is a simple **WorkShop Management App** designed to track and manage vehicl
 Run the following command to clone the project:
 ```sh
 git clone https://github.com/amirh3sam/WorkShop01.git
-2️⃣ Install Dependencies
-Navigate to the project folder and install dependencies:
+```
 
+###2️⃣ Install Dependencies
+Navigate to the project folder and install dependencies:
+```sh
 cd WorkShop01
 npm install
-3️⃣ Start the Application
+```
+###3️⃣ Start the Application
 Run the app with:
+```sh
 npm start
-
+```
