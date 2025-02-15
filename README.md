@@ -1,14 +1,51 @@
-# Getting Started with Create React App
+Workshop Management App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Overview
 
-## Available Scripts
+This is a simple workshop management application designed to track the status of cars in different departments. The app features five main tabs:
 
-In the project directory, you can run:
+Mechanic Shop
 
-### `npm start`
+Car Detailing
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+Body Work
 
+Body Cleaning
 
+Sales
+
+Each department can mark cars as ready. Once submitted, a confirmation popup appears. If confirmed, a notification is sent to the Sales tab. The Sales tab includes a table displaying submissions with department names, car counts, timestamps, and notifications.
+
+Features
+
+User-friendly UI for tracking car status
+
+Real-time updates across departments
+
+Confirmation popups before submission
+
+Notification system to Sales tab
+
+Data persistence for better management
+
+Installation
+
+To clone the repository, run the following command:
+
+git clone https://github.com/amirh3sam/WorkShop01.git
+
+Then, navigate into the project directory:
+
+cd WorkShop01
+
+Usage
+
+Follow the installation instructions and run the app as per the provided setup guide in the repository.
+
+Contribution
+
+Feel free to fork the repository and submit pull requests for improvements.
+
+License
+
+This project is open-source .
