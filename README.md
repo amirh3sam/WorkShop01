@@ -38,5 +38,5 @@ Run the app with:
 npm start
 ```
 
-After running this command, the app will be accessible at:👉 http://localhost:3000
+After running this command, the app will be accessible at:
 👉 http://localhost:3000
